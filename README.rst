@@ -9,7 +9,10 @@ Pytest Helpers Namespace
     :target: https://ci.appveyor.com/project/saltstack/pytest-helpers-namespace/branch/master
     :alt: See Build Status on AppVeyor
 
-Helpers
+This plugin does not provide any helpers to `pytest`_, it does, however, 
+provide a helpers namespace in `pytest`_ which enables you to register helper 
+functions in your ``conftest.py`` to be used within your tests without having 
+to import them.
 
 ----
 
@@ -19,13 +22,15 @@ This `Pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`
 Features
 --------
 
-* TODO
+* Provides a ``helpers`` `pytest`_ namespace which can be used to register 
+  helper functions without requiring you to import them on your actual tests to 
+  use them.
 
 
 Requirements
 ------------
 
-* TODO
+* `pytest`_!
 
 
 Installation
@@ -39,7 +44,56 @@ You can install "pytest-helpers-namespace" via `pip`_ from `PyPI`_::
 Usage
 -----
 
-* TODO
+Consider the following ``conftest.py`` file:
+
+.. code-block:: python
+
+   pytest_plugins = ['helpers_namespace']
+
+   import pytest
+
+   @pytest.helpers.register
+   def foo(bar):
+       '''
+       this dumb helper function will just return what you pass to it
+       '''
+       return bar
+
+
+And now consider the following test case:
+
+.. code-block:: python
+
+   def test_helper_namespace():
+       assert pytest.helpers.foo(True) is True
+
+
+Pretty simple right?!
+
+
+You can even nest namespaces. Consider the following ``conftest.py`` file:
+
+.. code-block:: python
+
+   pytest_plugins = ['helpers_namespace']
+
+   import pytest
+
+   @pytest.helpers.can.haz.register
+   def foo(bar):
+       '''
+       this dumb helper function will just return what you pass to it
+       '''
+       return bar
+
+
+And now consider the following test case:
+
+.. code-block:: python
+
+   def test_helper_namespace():
+       assert pytest.helpers.can.haz.foo(True) is True
+
 
 Contributing
 ------------
