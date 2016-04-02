@@ -1,12 +1,12 @@
 pytest-helpers
 ===================================
 
-.. image:: https://travis-ci.org/s0undt3ch/pytest-helpers.svg?branch=master
-    :target: https://travis-ci.org/s0undt3ch/pytest-helpers
+.. image:: https://travis-ci.org/saltstack/pytest-helpers.svg?branch=master
+    :target: https://travis-ci.org/saltstack/pytest-helpers
     :alt: See Build Status on Travis CI
 
-.. image:: https://ci.appveyor.com/api/projects/status/github/s0undt3ch/pytest-helpers?branch=master
-    :target: https://ci.appveyor.com/project/s0undt3ch/pytest-helpers/branch/master
+.. image:: https://ci.appveyor.com/api/projects/status/github/saltstack/pytest-helpers?branch=master
+    :target: https://ci.appveyor.com/project/saltstack/pytest-helpers/branch/master
     :alt: See Build Status on AppVeyor
 
 Helpers
@@ -64,7 +64,7 @@ If you encounter any problems, please `file an issue`_ along with a detailed des
 .. _`GNU GPL v3.0`: http://www.gnu.org/licenses/gpl-3.0.txt
 .. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
 .. _`cookiecutter-pytest-plugin`: https://github.com/pytest-dev/cookiecutter-pytest-plugin
-.. _`file an issue`: https://github.com/s0undt3ch/pytest-helpers/issues
+.. _`file an issue`: https://github.com/saltstack/pytest-helpers/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
 .. _`tox`: https://tox.readthedocs.org/en/latest/
 .. _`pip`: https://pypi.python.org/pypi/pip/
