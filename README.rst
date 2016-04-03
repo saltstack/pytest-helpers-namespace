@@ -113,6 +113,20 @@ Issues
 If you encounter any problems, please `file an issue`_ along with a detailed 
 description.
 
+Changelog
+---------
+
+v2016.4.3
+~~~~~~~~~
+
+* Provide proper errors when helper functions or namespaces are being 
+  overridden. `#1`_
+
+v2016.3.2
+~~~~~~~~~~
+
+* First working release
+
 ----
 
 This `Pytest`_ plugin was generated with `Cookiecutter`_ along with 
@@ -127,3 +141,4 @@ This `Pytest`_ plugin was generated with `Cookiecutter`_ along with
 .. _`tox`: https://tox.readthedocs.org/en/latest/
 .. _`pip`: https://pypi.python.org/pypi/pip/
 .. _`PyPI`: https://pypi.python.org/pypi
+.. _`#1`: https://github.com/saltstack/pytest-helpers-namespace/issues/1
