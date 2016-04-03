@@ -9,14 +9,14 @@ Pytest Helpers Namespace
     :target: https://ci.appveyor.com/project/saltstack/pytest-helpers-namespace/branch/master
     :alt: See Build Status on AppVeyor
 
+.. image:: http://img.shields.io/pypi/v/pytest-helpers-namespace.svg
+   :target: https://pypi.python.org/pypi/pytest-helpers-namespace
+
+
 This plugin does not provide any helpers to `pytest`_, it does, however, 
 provide a helpers namespace in `pytest`_ which enables you to register helper 
 functions in your ``conftest.py`` to be used within your tests without having 
 to import them.
-
-----
-
-This `Pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`_'s `Cookiecutter-pytest-plugin`_ template.
 
 
 Features
@@ -103,13 +103,20 @@ the coverage at least stays the same before you submit a pull request.
 License
 -------
 
-Distributed under the terms of the `Apache Software License 2.0`_ license, "pytest-helpers-namespace" is free and open source software
+Distributed under the terms of the `Apache Software License 2.0`_ license, 
+"pytest-helpers-namespace" is free and open source software.
 
 
 Issues
 ------
 
-If you encounter any problems, please `file an issue`_ along with a detailed description.
+If you encounter any problems, please `file an issue`_ along with a detailed 
+description.
+
+----
+
+This `Pytest`_ plugin was generated with `Cookiecutter`_ along with 
+`@hackebrot`_'s `Cookiecutter-pytest-plugin`_ template.
 
 .. _`Cookiecutter`: https://github.com/audreyr/cookiecutter
 .. _`@hackebrot`: https://github.com/hackebrot
