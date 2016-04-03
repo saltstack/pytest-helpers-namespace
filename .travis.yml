@@ -9,6 +9,9 @@ python:
   - "3.5"
   - "pypy"
 
+before_install:
+  - pip install coverage codecov pytest-cov
+
 install:
   - pip install tox
   - "TOX_ENV=${TRAVIS_PYTHON_VERSION/[0-9].[0-9]/py${TRAVIS_PYTHON_VERSION/.}}"
@@ -19,3 +22,6 @@ before_cache:
 cache:
   directories:
     - $HOME/.cache/pip
+
+after_success:
+  - codecov
