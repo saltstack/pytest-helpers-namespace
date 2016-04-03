@@ -10,7 +10,9 @@ python:
   - "pypy"
 
 before_install:
-  - pip install coverage codecov pytest-cov
+  - pip install coverage pytest-cov
+  - pip install codecov
+  - pip install pytest-cov
 
 install:
   - pip install tox
