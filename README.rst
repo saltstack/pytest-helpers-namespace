@@ -30,7 +30,7 @@ Features
 Requirements
 ------------
 
-* `pytest`_!
+* None!
 
 
 Installation
