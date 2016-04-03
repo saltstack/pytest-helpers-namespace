@@ -11,8 +11,8 @@
     Pytest Helpers Namespace Plugin
 '''
 
-
-# -*- coding: utf-8 -*-
+# Import python libs
+from functools import wraps
 
 
 class HelpersRegistry(object):
@@ -29,7 +29,42 @@ class HelpersRegistry(object):
         '''
         Register's a new function as a helper
         '''
-        self._registry[func.__name__] = func
+        if func.__name__ in self._registry:
+            raise RuntimeError(
+                'A {0} helper function is already registered under the name: {1}'.format(
+                    self.__class__.__name__,
+                    func.__name__
+                )
+            )
+
+        # Instead of setting the register attribute on the actual function, thus
+        # changing the function, we define a decorator wrapper and set the register
+        # attribute on it.
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            '''
+            This wrapper will just call the actual helper function
+            '''
+            return func(*args, **kwargs)
+
+        def wrapper_register(func):
+            '''
+            This function will just raise a RuntimeError in case a function
+            registration, which also sets a nested namespace, tries to override
+            a known helper function with that nested namespace.
+            This will just make the raised error make more sense.
+
+            Instead of "AttributeError: 'function' object has no attribute 'register'",
+            we will raise the excption below.
+            '''
+            raise RuntimeError(
+                'A {0} namespace is already registered under the name: {1}'.format(
+                    self.__class__.__name__,
+                    func.__name__
+                )
+            )
+        wrapper.register = wrapper_register
+        self._registry[func.__name__] = wrapper
         return self
 
     def __getattribute__(self, name):
