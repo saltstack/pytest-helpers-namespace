@@ -5,15 +5,14 @@ Pytest Helpers Namespace
     :target: https://travis-ci.org/saltstack/pytest-helpers-namespace
     :alt: See Build Status on Travis CI
 
-.. image:: https://ci.appveyor.com/api/projects/status/github/saltstack-public/pytest-helpers-namespace?branch=master
+.. image:: https://ci.appveyor.com/api/projects/status/github/saltstack/pytest-helpers-namespace?branch=master
     :target: https://ci.appveyor.com/project/saltstack-public/pytest-helpers-namespace/branch/master
     :alt: See Build Status on AppVeyor
 
 .. image:: http://img.shields.io/pypi/v/pytest-helpers-namespace.svg
    :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
-.. image:: 
-  https://codecov.io/github/saltstack/pytest-helpers-namespace/coverage.svg?branch=master
+.. image:: https://codecov.io/github/saltstack/pytest-helpers-namespace/coverage.svg?branch=master
     :target: https://codecov.io/github/saltstack/pytest-helpers-namespace?branch=master
 
 This plugin does not provide any helpers to `pytest`_, it does, however, 
