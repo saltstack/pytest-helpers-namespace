@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pragma: no cover
 
 def test_namespace(testdir):
     testdir.makeconftest(

@@ -10,6 +10,7 @@
 
     pytest helpers-namespace plugin version information
 '''
+# pragma: no cover
 
 # Import Python Libs
 from __future__ import absolute_import
