@@ -1,7 +1,7 @@
 [run]
 branch = True
 cover_pylib = False
-source = pytest_helpers_namespace/
+source = pytest_helpers_namespace
 omit =
   pytest_helpers_namespace/version.py
   tests/*.py
@@ -25,3 +25,9 @@ exclude_lines =
     if __name__ == .__main__.:
 
 ignore_errors = True
+
+[paths]
+source =
+   pytest_helpers_namespace
+   .tox/*/lib/python*/site-packages/pytest_helpers_namespace
+   .tox/pypy*/site-packages/pytest_helpers_namespace
