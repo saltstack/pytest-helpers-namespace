@@ -10,10 +10,10 @@ Pytest Helpers Namespace
     :alt: See Build Status on AppVeyor
 
 .. image:: http://img.shields.io/pypi/v/pytest-helpers-namespace.svg
-   :target: https://pypi.python.org/pypi/pytest-helpers-namespace
+    :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
 .. image:: https://codecov.io/github/saltstack/pytest-helpers-namespace/coverage.svg?branch=master
-   :target: https://codecov.io/github/saltstack/pytest-helpers-namespace?branch=master
+    :target: https://codecov.io/github/saltstack/pytest-helpers-namespace?branch=master
 
 This plugin does not provide any helpers to `pytest`_, it does, however, 
 provide a helpers namespace in `pytest`_ which enables you to register helper 
