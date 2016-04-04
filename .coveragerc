@@ -24,6 +24,9 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
 
+    # I really don't know why this isn't hit
+    def __call__
+
 ignore_errors = True
 
 [paths]
