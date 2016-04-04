@@ -70,7 +70,7 @@ class HelpersRegistry(object):
             return object.__getattribute__(self, name)
         return self._registry.setdefault(name, self.__class__())
 
-    def __repr__(self):  # pragma: no cover
+    def __repr__(self):
         return '{0} {1!r}>'.format(self.__class__.__name__, self._registry)
 
     def __call__(self, *args, **kwargs):
