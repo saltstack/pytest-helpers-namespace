@@ -13,19 +13,19 @@ Pytest Helpers Namespace
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
 .. image:: https://codecov.io/github/saltstack/pytest-helpers-namespace/coverage.svg?branch=master
-    :target: https://codecov.io/github/saltstack/pytest-helpers-namespace?branch=master
+    :target: https://codecov.io/github/saltstack/pytest-helpers-namespace?branch=master
 
-This plugin does not provide any helpers to `pytest`_, it does, however, 
-provide a helpers namespace in `pytest`_ which enables you to register helper 
-functions in your ``conftest.py`` to be used within your tests without having 
+This plugin does not provide any helpers to `pytest`_, it does, however,
+provide a helpers namespace in `pytest`_ which enables you to register helper
+functions in your ``conftest.py`` to be used within your tests without having
 to import them.
 
 
 Features
 --------
 
-* Provides a ``helpers`` `pytest`_ namespace which can be used to register 
-  helper functions without requiring you to import them on your actual tests to 
+* Provides a ``helpers`` `pytest`_ namespace which can be used to register
+  helper functions without requiring you to import them on your actual tests to
   use them.
 
 
@@ -105,14 +105,14 @@ the coverage at least stays the same before you submit a pull request.
 License
 -------
 
-Distributed under the terms of the `Apache Software License 2.0`_ license, 
+Distributed under the terms of the `Apache Software License 2.0`_ license,
 "pytest-helpers-namespace" is free and open source software.
 
 
 Issues
 ------
 
-If you encounter any problems, please `file an issue`_ along with a detailed 
+If you encounter any problems, please `file an issue`_ along with a detailed
 description.
 
 Changelog
@@ -121,7 +121,7 @@ Changelog
 v2016.4.3
 ~~~~~~~~~
 
-* Provide proper errors when helper functions or namespaces are being 
+* Provide proper errors when helper functions or namespaces are being
   overridden. `#1`_
 
 v2016.3.2
@@ -131,7 +131,7 @@ v2016.3.2
 
 ----
 
-This `Pytest`_ plugin was generated with `Cookiecutter`_ along with 
+This `Pytest`_ plugin was generated with `Cookiecutter`_ along with
 `@hackebrot`_'s `Cookiecutter-pytest-plugin`_ template.
 
 .. _`Cookiecutter`: https://github.com/audreyr/cookiecutter
