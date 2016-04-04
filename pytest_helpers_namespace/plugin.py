@@ -14,6 +14,33 @@
 # Import python libs
 from functools import wraps
 
+class FuncWrapper(object):
+
+    def __init__(self, func):
+        self.func = func
+
+    def register(self, func):
+        '''
+        This function will just raise a RuntimeError in case a function
+        registration, which also sets a nested namespace, tries to override
+        a known helper function with that nested namespace.
+        This will just make the raised error make more sense.
+
+        Instead of "AttributeError: 'function' object has no attribute 'register'",
+        we will raise the excption below.
+        '''
+        raise RuntimeError(
+            'A namespace is already registered under the name: {0}'.format(
+                func.__name__
+            )
+        )
+
+    def __call__(self, *args, **kwargs):
+        '''
+        This wrapper will just call the actual helper function
+        '''
+        return self.func(*args, **kwargs)
+
 
 class HelpersRegistry(object):
     '''
@@ -31,40 +58,11 @@ class HelpersRegistry(object):
         '''
         if func.__name__ in self._registry:
             raise RuntimeError(
-                'A {0} helper function is already registered under the name: {1}'.format(
-                    self.__class__.__name__,
+                'A helper function is already registered under the name: {0}'.format(
                     func.__name__
                 )
             )
-
-        # Instead of setting the register attribute on the actual function, thus
-        # changing the function, we define a decorator wrapper and set the register
-        # attribute on it.
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            '''
-            This wrapper will just call the actual helper function
-            '''
-            return func(*args, **kwargs)
-
-        def wrapper_register(func):
-            '''
-            This function will just raise a RuntimeError in case a function
-            registration, which also sets a nested namespace, tries to override
-            a known helper function with that nested namespace.
-            This will just make the raised error make more sense.
-
-            Instead of "AttributeError: 'function' object has no attribute 'register'",
-            we will raise the excption below.
-            '''
-            raise RuntimeError(
-                'A {0} namespace is already registered under the name: {1}'.format(
-                    self.__class__.__name__,
-                    func.__name__
-                )
-            )
-        wrapper.register = wrapper_register
-        self._registry[func.__name__] = wrapper
+        self._registry[func.__name__] = wraps(func)(FuncWrapper(func))
         return self
 
     def __getattribute__(self, name):

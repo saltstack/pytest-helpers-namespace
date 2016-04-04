@@ -114,7 +114,7 @@ def test_namespace_override(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stderr.fnmatch_lines([
-        'RuntimeError: A HelpersRegistry helper function is already registered under the name: foo'
+        'RuntimeError: A helper function is already registered under the name: foo'
     ])
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -150,7 +150,7 @@ def test_namespace_override_2(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stderr.fnmatch_lines([
-        'RuntimeError: A HelpersRegistry namespace is already registered under the name: bar'
+        'RuntimeError: A namespace is already registered under the name: bar'
     ])
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -186,7 +186,7 @@ def test_helper_override(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stderr.fnmatch_lines([
-        'RuntimeError: A HelpersRegistry helper function is already registered under the name: foo'
+        'RuntimeError: A helper function is already registered under the name: foo'
     ])
 
     # make sure that that we get a '0' exit code for the testsuite
