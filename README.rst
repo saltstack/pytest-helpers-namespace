@@ -137,6 +137,11 @@ description.
 Changelog
 ---------
 
+v2016.4.5
+~~~~~~~~~
+
+* Use a wrapper class instead of adding an attribute to a function.
+
 v2016.4.3
 ~~~~~~~~~
 
