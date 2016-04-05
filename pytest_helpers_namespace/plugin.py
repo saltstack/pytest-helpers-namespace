@@ -79,7 +79,7 @@ class HelpersRegistry(object):
         )
 
 
-def pytest_namespace():  # pragma: no cover
+def pytest_namespace():
     '''
     Register our own namespace with pytest
     '''
