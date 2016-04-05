@@ -38,5 +38,5 @@ after_test:
 artifacts:
   - path: dist\*
 
-#on_success:
-#  - TODO: upload the content of dist/*.whl to a public wheelhouse
+on_success:
+  - "%PYTHON%/Scripts/coverage report"

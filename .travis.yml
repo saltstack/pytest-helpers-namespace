@@ -24,4 +24,5 @@ cache:
     - $HOME/.cache/pip
 
 after_success:
+  - coverage report
   - codecov
