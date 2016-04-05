@@ -9,11 +9,32 @@ Pytest Helpers Namespace
     :target: https://ci.appveyor.com/project/saltstack-public/pytest-helpers-namespace/branch/master
     :alt: See Build Status on AppVeyor
 
-.. image:: http://img.shields.io/pypi/v/pytest-helpers-namespace.svg
-    :target: https://pypi.python.org/pypi/pytest-helpers-namespace
-
 .. image:: https://codecov.io/github/saltstack/pytest-helpers-namespace/coverage.svg?branch=master
     :target: https://codecov.io/github/saltstack/pytest-helpers-namespace?branch=master
+    :alt: Code Coverage
+
+
+
+.. |version| image:: https://img.shields.io/pypi/v/pytest-helpers-namespace.svg?style=flat
+    :alt: PyPI Package latest release
+    :target: https://pypi.python.org/pypi/pytest-helpers-namespace
+
+.. |downloads| image:: https://img.shields.io/pypi/dm/pytest-helpers-namespace.svg?style=flat
+    :alt: PyPI Package monthly downloads
+    :target: https://pypi.python.org/pypi/pytest-helpers-namespace
+
+.. |wheel| image:: https://img.shields.io/pypi/wheel/pytest-helpers-namespace.svg?style=flat
+    :alt: PyPI Wheel
+    :target: https://pypi.python.org/pypi/pytest-helpers-namespace
+
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/pytest-helpers-namespace.svg?style=flat
+    :alt: Supported versions
+    :target: https://pypi.python.org/pypi/pytest-helpers-namespace
+
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/pytest-helpers-namespace.svg?style=flat
+    :alt: Supported implementations
+    :target: https://pypi.python.org/pypi/pytest-helpers-namespace
+
 
 This plugin does not provide any helpers to `pytest`_, it does, however,
 provide a helpers namespace in `pytest`_ which enables you to register helper
