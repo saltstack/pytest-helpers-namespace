@@ -15,23 +15,23 @@ Pytest Helpers Namespace
 
 
 
-.. |version| image:: https://img.shields.io/pypi/v/pytest-helpers-namespace.svg?style=flat
+.. image:: https://img.shields.io/pypi/v/pytest-helpers-namespace.svg?style=flat
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
-.. |downloads| image:: https://img.shields.io/pypi/dm/pytest-helpers-namespace.svg?style=flat
+.. image:: https://img.shields.io/pypi/dm/pytest-helpers-namespace.svg?style=flat
     :alt: PyPI Package monthly downloads
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
-.. |wheel| image:: https://img.shields.io/pypi/wheel/pytest-helpers-namespace.svg?style=flat
+.. image:: https://img.shields.io/pypi/wheel/pytest-helpers-namespace.svg?style=flat
     :alt: PyPI Wheel
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/pytest-helpers-namespace.svg?style=flat
+.. image:: https://img.shields.io/pypi/pyversions/pytest-helpers-namespace.svg?style=flat
     :alt: Supported versions
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/pytest-helpers-namespace.svg?style=flat
+.. image:: https://img.shields.io/pypi/implementation/pytest-helpers-namespace.svg?style=flat
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
