@@ -13,8 +13,6 @@ Pytest Helpers Namespace
     :target: https://codecov.io/github/saltstack/pytest-helpers-namespace?branch=master
     :alt: Code Coverage
 
-
-
 .. image:: https://img.shields.io/pypi/v/pytest-helpers-namespace.svg?style=flat
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
