@@ -137,6 +137,11 @@ description.
 Changelog
 ---------
 
+v2016.4.15
+~~~~~~~~~~
+
+* Hide the ``FuncWrapper`` traceback in pytest failures. #3. Thanks Logan Glickfield(@lsglick)
+
 v2016.4.5
 ~~~~~~~~~
 
