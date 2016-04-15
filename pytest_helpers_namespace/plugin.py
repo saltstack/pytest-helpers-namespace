@@ -39,6 +39,7 @@ class FuncWrapper(object):
         '''
         This wrapper will just call the actual helper function
         '''
+        __tracebackhide__ = True
         return self.func(*args, **kwargs)
 
 
