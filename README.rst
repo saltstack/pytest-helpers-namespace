@@ -140,7 +140,7 @@ Changelog
 v2016.4.15
 ~~~~~~~~~~
 
-* Hide the ``FuncWrapper`` traceback in pytest failures. #3. Thanks Logan Glickfield(@lsglick)
+* Hide the ``FuncWrapper`` traceback in pytest failures. `#3`_. Thanks Logan Glickfield(@lsglick)
 
 v2016.4.5
 ~~~~~~~~~
@@ -173,3 +173,4 @@ This `Pytest`_ plugin was generated with `Cookiecutter`_ along with
 .. _`pip`: https://pypi.python.org/pypi/pip/
 .. _`PyPI`: https://pypi.python.org/pypi
 .. _`#1`: https://github.com/saltstack/pytest-helpers-namespace/issues/1
+.. _`#3`: https://github.com/saltstack/pytest-helpers-namespace/pull/3
