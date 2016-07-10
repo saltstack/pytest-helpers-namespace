@@ -191,3 +191,28 @@ def test_helper_override(testdir):
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret != 0
+
+
+def test_helper_as_regular_function(testdir):
+    testdir.makepyfile('''
+        import pytest
+
+        @pytest.helpers.register
+        def foo():
+            return 'bar'
+
+        def test_helpers():
+            assert pytest.helpers.foo() == 'bar'
+            assert foo() == 'bar'
+            print('PASSED')
+    ''')
+
+    result = testdir.runpytest('-s')
+
+    # fnmatch_lines does an assertion internally
+    result.stdout.fnmatch_lines([
+        'test_helper_as_regular_function.py PASSED',
+    ])
+
+    # make sure that that we get a '0' exit code for the testsuite
+    assert result.ret == 0

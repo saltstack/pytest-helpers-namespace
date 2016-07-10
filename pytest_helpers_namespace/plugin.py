@@ -64,7 +64,7 @@ class HelpersRegistry(object):
                 )
             )
         self._registry[func.__name__] = wraps(func)(FuncWrapper(func))
-        return self
+        return func
 
     def __getattribute__(self, name):
         if name in ('__class__', '_registry', 'register'):
