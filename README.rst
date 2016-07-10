@@ -137,6 +137,11 @@ description.
 Changelog
 ---------
 
+v2016.7.10
+~~~~~~~~~~
+
+* Allow a registered function to contibue to behave as a regular function. `#4`_.
+
 v2016.4.15
 ~~~~~~~~~~
 
@@ -175,5 +180,6 @@ This `Pytest`_ plugin was generated with `Cookiecutter`_ along with
 
 .. _`#1`: https://github.com/saltstack/pytest-helpers-namespace/issues/1
 .. _`#3`: https://github.com/saltstack/pytest-helpers-namespace/pull/3
+.. _`#4`: https://github.com/saltstack/pytest-helpers-namespace/issues/4
 
 .. _`@lsglick`: https://github.com/lsglick
