@@ -5,7 +5,7 @@ Pytest Helpers Namespace
     :target: https://travis-ci.org/saltstack/pytest-helpers-namespace
     :alt: See Build Status on Travis CI
 
-.. image:: https://ci.appveyor.com/api/projects/status/github/saltstack/pytest-helpers-namespace?branch=master
+.. image:: https://ci.appveyor.com/api/projects/status/github/saltstack/pytest-helpers-namespace?branch=master&svg=true
     :target: https://ci.appveyor.com/project/saltstack-public/pytest-helpers-namespace/branch/master
     :alt: See Build Status on AppVeyor
 
