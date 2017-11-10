@@ -116,6 +116,9 @@ And now consider the following test case:
        assert pytest.helpers.can.haz.foo(True) is True
 
 
+You can even pass a name to the register function and that will be the helper function name.
+
+
 Contributing
 ------------
 Contributions are very welcome. Tests can be run with `tox`_, please ensure
