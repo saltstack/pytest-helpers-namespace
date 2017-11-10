@@ -216,3 +216,28 @@ def test_helper_as_regular_function(testdir):
 
     # make sure that that we get a '0' exit code for the testsuite
     assert result.ret == 0
+
+
+def test_helper_with_custom_name(testdir):
+    testdir.makepyfile('''
+        import pytest
+
+        @pytest.helpers.register('jump')
+        def foo():
+            return 'bar'
+
+        def test_helpers():
+            assert pytest.helpers.jump() == 'bar'
+            assert foo() == 'bar'
+            print('PASSED')
+    ''')
+
+    result = testdir.runpytest('-s')
+
+    # fnmatch_lines does an assertion internally
+    result.stdout.fnmatch_lines([
+        'test_helper_with_custom_name.py PASSED',
+    ])
+
+    # make sure that that we get a '0' exit code for the testsuite
+    assert result.ret == 0

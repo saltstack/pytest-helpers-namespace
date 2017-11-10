@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
     :codeauthor: :email:`Pedro Algarvio (pedro@algarvio.me)`
-    :copyright: © 2016 by the SaltStack Team, see AUTHORS for more details.
+    :copyright: © 2016-2017 by the SaltStack Team, see AUTHORS for more details.
     :license: Apache 2.0, see LICENSE for more details.
 
 
@@ -12,7 +12,8 @@
 '''
 
 # Import python libs
-from functools import wraps
+from functools import partial, wraps
+
 
 class FuncWrapper(object):
 
@@ -53,17 +54,22 @@ class HelpersRegistry(object):
     def __init__(self):
         self._registry = {}
 
-    def register(self, func):
+    def register(self, func, name=None):
         '''
         Register's a new function as a helper
         '''
-        if func.__name__ in self._registry:
+        if isinstance(func, str):
+            return partial(self.register, name=func)
+
+        if name is None:
+            name = func.__name__
+        if name in self._registry:
             raise RuntimeError(
                 'A helper function is already registered under the name: {0}'.format(
-                    func.__name__
+                    name
                 )
             )
-        self._registry[func.__name__] = wraps(func)(FuncWrapper(func))
+        self._registry[name] = wraps(func)(FuncWrapper(func))
         return func
 
     def __getattribute__(self, name):
