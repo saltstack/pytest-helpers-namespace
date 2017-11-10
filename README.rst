@@ -140,6 +140,11 @@ description.
 Changelog
 ---------
 
+v2017.11.10
+~~~~~~~~~~~
+
+* Allow passing a string to the register function which will be the helper name
+
 v2016.7.10
 ~~~~~~~~~~
 
