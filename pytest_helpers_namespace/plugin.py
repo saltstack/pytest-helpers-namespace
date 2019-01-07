@@ -14,6 +14,9 @@
 # Import python libs
 from functools import partial, wraps
 
+# Import 3rd-party libs
+import pytest
+
 
 class FuncWrapper(object):
 
@@ -86,8 +89,25 @@ class HelpersRegistry(object):
         )
 
 
-def pytest_namespace():
-    '''
-    Register our own namespace with pytest
-    '''
-    return {'helpers': HelpersRegistry()}
+if tuple([int(part) for part in pytest.__version__.split('.') if part.isdigit()]) < (4, 1):
+    # PyTest < 4.1
+    def pytest_namespace():
+        '''
+        Register our own namespace with pytest
+        '''
+        return {'helpers': HelpersRegistry()}
+else:
+    # PyTest >= 4.1
+    # This now uses the stop gap provided in:
+    #   https://docs.pytest.org/en/latest/deprecations.html#pytest-namespace
+    def pytest_configure():
+        try:
+            pytest.helpers
+        except AttributeError:
+            pytest.helpers = HelpersRegistry()
+
+    def pytest_unconfigure():
+        try:
+            delattr(pytest, 'helpers')
+        except AttributeError:
+            pass
