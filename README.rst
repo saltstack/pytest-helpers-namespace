@@ -140,6 +140,11 @@ description.
 Changelog
 ---------
 
+v2019.1.6
+~~~~~~~~~
+
+* No changes were made besides locking to PyTest < 4.1
+
 v2017.11.11
 ~~~~~~~~~~~
 

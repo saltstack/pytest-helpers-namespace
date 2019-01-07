@@ -62,7 +62,7 @@ setup(
     description='PyTest Helpers Namespace',
     long_description=LONG_DESCRIPTION,
     packages=find_packages(),
-    install_requires=['pytest>=2.9.1'],
+    install_requires=['pytest>=2.9.1,<4.1'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Pytest',
