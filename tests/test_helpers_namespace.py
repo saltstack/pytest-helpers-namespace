@@ -3,14 +3,14 @@
 
 def test_namespace(testdir):
     testdir.makeconftest(
-    '''
-    pytest_plugins = ['helpers_namespace']
-    import pytest
+        '''
+        pytest_plugins = ['helpers_namespace']
+        import pytest
 
-    @pytest.helpers.register
-    def foo(bar):
-        return bar
-    '''
+        @pytest.helpers.register
+        def foo(bar):
+            return bar
+        '''
     )
 
     testdir.makepyfile('''
@@ -34,14 +34,14 @@ def test_namespace(testdir):
 
 def test_nested_namespace(testdir):
     testdir.makeconftest(
-    '''
-    pytest_plugins = ['helpers_namespace']
-    import pytest
+        '''
+        pytest_plugins = ['helpers_namespace']
+        import pytest
 
-    @pytest.helpers.foo.bar.register
-    def foo(bar):
-        return bar
-    '''
+        @pytest.helpers.foo.bar.register
+        def foo(bar):
+            return bar
+        '''
     )
 
     testdir.makepyfile('''
@@ -87,18 +87,18 @@ def test_unregistered_namespace(testdir):
 
 def test_namespace_override(testdir):
     testdir.makeconftest(
-    '''
-    pytest_plugins = ['helpers_namespace']
-    import pytest
+        '''
+        pytest_plugins = ['helpers_namespace']
+        import pytest
 
-    @pytest.helpers.foo.register
-    def bar(bar):
-        return bar
+        @pytest.helpers.foo.register
+        def bar(bar):
+            return bar
 
-    @pytest.helpers.register
-    def foo(bar):
-        return bar
-    '''
+        @pytest.helpers.register
+        def foo(bar):
+            return bar
+        '''
     )
     testdir.makepyfile('''
         import pytest
@@ -114,7 +114,7 @@ def test_namespace_override(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stderr.fnmatch_lines([
-        'RuntimeError: A helper function is already registered under the name: foo'
+        '*RuntimeError: A helper function is already registered under the name: foo'
     ])
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -123,18 +123,18 @@ def test_namespace_override(testdir):
 
 def test_namespace_override_2(testdir):
     testdir.makeconftest(
-    '''
-    pytest_plugins = ['helpers_namespace']
-    import pytest
+        '''
+        pytest_plugins = ['helpers_namespace']
+        import pytest
 
-    @pytest.helpers.register
-    def foo(bar):
-        return bar
+        @pytest.helpers.register
+        def foo(bar):
+            return bar
 
-    @pytest.helpers.foo.register
-    def bar(bar):
-        return bar
-    '''
+        @pytest.helpers.foo.register
+        def bar(bar):
+            return bar
+        '''
     )
     testdir.makepyfile('''
         import pytest
@@ -150,7 +150,7 @@ def test_namespace_override_2(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stderr.fnmatch_lines([
-        'RuntimeError: A namespace is already registered under the name: bar'
+        '*RuntimeError: A namespace is already registered under the name: bar'
     ])
 
     # make sure that that we get a '0' exit code for the testsuite
@@ -159,18 +159,18 @@ def test_namespace_override_2(testdir):
 
 def test_helper_override(testdir):
     testdir.makeconftest(
-    '''
-    pytest_plugins = ['helpers_namespace']
-    import pytest
+        '''
+        import pytest
+        pytest_plugins = ['helpers_namespace']
 
-    @pytest.helpers.register
-    def foo(bar):
-        return bar
+        @pytest.helpers.register
+        def foo(bar):
+            return bar
 
-    @pytest.helpers.register
-    def foo(bar):
-        return bar
-    '''
+        @pytest.helpers.register
+        def foo(bar):
+            return bar
+        '''
     )
     testdir.makepyfile('''
         import pytest
@@ -186,7 +186,7 @@ def test_helper_override(testdir):
 
     # fnmatch_lines does an assertion internally
     result.stderr.fnmatch_lines([
-        'RuntimeError: A helper function is already registered under the name: foo'
+        '*RuntimeError: A helper function is already registered under the name: foo'
     ])
 
     # make sure that that we get a '0' exit code for the testsuite
