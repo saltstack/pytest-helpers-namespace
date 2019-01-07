@@ -140,6 +140,12 @@ description.
 Changelog
 ---------
 
+
+v2019.1.8
+~~~~~~~~~
+
+* Patch PyTest before any ``conftest.py`` file is processed.
+
 v2019.1.7
 ~~~~~~~~~
 

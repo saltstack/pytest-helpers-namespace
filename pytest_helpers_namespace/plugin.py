@@ -100,7 +100,10 @@ else:
     # PyTest >= 4.1
     # This now uses the stop gap provided in:
     #   https://docs.pytest.org/en/latest/deprecations.html#pytest-namespace
-    def pytest_configure():
+    #
+    # We however use `pytest_load_initial_conftests` because we need to "patch"
+    # pytest before any conftest is loaded.
+    def pytest_load_initial_conftests(early_config, parser, args):
         try:
             pytest.helpers
         except AttributeError:
