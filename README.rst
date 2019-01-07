@@ -140,6 +140,11 @@ description.
 Changelog
 ---------
 
+v2019.1.7
+~~~~~~~~~
+
+* Support PyTest >= 4.1
+
 v2019.1.6.post1
 ~~~~~~~~~~~~~~~
 
