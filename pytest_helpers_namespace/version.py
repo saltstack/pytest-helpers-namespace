@@ -16,5 +16,5 @@
 from __future__ import absolute_import
 
 
-__version_info__ = (2019, 1, 6)
-__version__ = '{0}.{1}.{2}'.format(*__version_info__)
+__version_info__ = (2019, 1, 6, 1)
+__version__ = '{0}.{1}.{2}.post{3}'.format(*__version_info__)
