@@ -45,10 +45,6 @@ with codecs.open(os.path.join(SETUP_DIRNAME,
 VERSION = _LOCALS['__version__']
 LONG_DESCRIPTION = read('README.rst')
 
-def read(fname):
-    file_path = os.path.join(os.path.dirname(__file__), fname)
-    return codecs.open(file_path, encoding='utf-8').read()
-
 
 setup(
     name='pytest-helpers-namespace',
