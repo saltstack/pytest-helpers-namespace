@@ -115,7 +115,7 @@ You can even pass a name to the register function and that will be the helper fu
 
 Contributing
 ------------
-Contributions are very welcome. Tests can be run with `tox`_, please ensure
+Contributions are very welcome. Tests can be run with `nox`_, please ensure
 the coverage at least stays the same before you submit a pull request.
 
 License
@@ -203,7 +203,7 @@ This `Pytest`_ plugin was generated with `Cookiecutter`_ along with
 .. _`cookiecutter-pytest-plugin`: https://github.com/pytest-dev/cookiecutter-pytest-plugin
 .. _`file an issue`: https://github.com/saltstack/pytest-helpers-namespace/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
-.. _`tox`: https://tox.readthedocs.org/en/latest/
+.. _`nox`: https://nox.thea.codes/en/stable/
 .. _`pip`: https://pypi.python.org/pypi/pip/
 .. _`PyPI`: https://pypi.python.org/pypi
 
