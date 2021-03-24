@@ -140,6 +140,7 @@ v2021.3.24
 * Switched project to a ``src`` layout.
 * Switched project to a declarative setuptools approach
 * Added support to check if a helper has been registered
+* Pytest >= 6.1.1 is now required
 
 v2019.1.8
 ~~~~~~~~~
