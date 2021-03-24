@@ -1,0 +1,430 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  Pre-Commit:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - id: changed-files
+      name: Get Changed Files
+      uses: dorny/paths-filter@v2
+      with:
+        token: ${{ github.token }}
+        list-files: shell
+        filters: |
+          repo:
+            - added|modified:
+              - '**'
+    - name: Set Cache Key
+      run: echo "PY=$(python --version --version | sha256sum | cut -d' ' -f1)" >> $GITHUB_ENV
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - name: Check ALL Files On Branch
+      uses: pre-commit/action@v2.0.0
+      if: github.event_name != 'pull_request'
+    - name: Check Changed Files On PR
+      uses: pre-commit/action@v2.0.0
+      if: github.event_name == 'pull_request'
+      with:
+        extra_args: --files ${{ steps.changed-files.outputs.repo_files }}
+
+
+  Docs:
+    runs-on: ubuntu-20.04
+    needs: Pre-Commit
+
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.7 For Nox
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+
+    - name: Install Nox
+      run: |
+        python -m pip install --upgrade pip
+        pip install nox
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Doc Requirements
+      run: |
+        nox --force-color -e docs --install-only
+
+    - name: Build Docs
+      env:
+        SKIP_REQUIREMENTS_INSTALL: YES
+      run: |
+        nox --force-color -e docs
+
+  Linux:
+    runs-on: ubuntu-20.04
+    needs: Pre-Commit
+
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        python-version:
+          - 3.5
+          - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Nox
+      run: |
+        python -m pip install --upgrade pip
+        pip install nox
+
+    - name: Install Test Requirements
+      run: |
+        nox --force-color -e tests-${{ matrix.python-version }} --install-only
+
+    - name: Test
+      id: run-tests
+      env:
+        SKIP_REQUIREMENTS_INSTALL: YES
+      run: |
+        nox --force-color -e tests-${{ matrix.python-version }} -- -vv tests/
+
+    - name: Create CodeCov Flags
+      if: always()
+      id: codecov-flags
+      run: |
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+
+    - name: Upload Helpers Namespace Code Coverage
+      if: always()
+      shell: bash
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},helpers
+        REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-helpers
+        REPORT_PATH: artifacts/coverage-project.xml
+      run: |
+        if [ ! -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+          if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
+              break
+          fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+        if [ -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+            if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+                break
+            fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+
+    - name: Upload Helpers Namespace Tests Code Coverage
+      if: always()
+      shell: bash
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},helpers
+        REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-tests
+        REPORT_PATH: artifacts/coverage-tests.xml
+      run: |
+        if [ ! -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+          if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
+              break
+          fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+        if [ -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+            if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+                break
+            fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+
+    - name: Upload Logs
+      if: always()
+      uses: actions/upload-artifact@main
+      with:
+        name: runtests-${{ runner.os }}-py${{ matrix.python-version }}.log
+        path: artifacts/runtests-*.log
+
+  Windows:
+    runs-on: windows-latest
+    needs: Pre-Commit
+
+    timeout-minutes: 40
+
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        python-version:
+          - 3.5
+          - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Nox
+      run: |
+        python -m pip install --upgrade pip
+        pip install nox
+
+    - name: Install Test Requirements
+      shell: bash
+      run: |
+        export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
+        nox --force-color -e tests-${{ matrix.python-version }} --install-only
+
+    - name: Test
+      id: run-tests
+      shell: bash
+      env:
+        SKIP_REQUIREMENTS_INSTALL: YES
+      run: |
+        export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
+        nox --force-color -e tests-${{ matrix.python-version }} -- -vv tests/
+
+    - name: Create CodeCov Flags
+      if: always()
+      id: codecov-flags
+      run: |
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+
+    - name: Upload Helpers Namespace Code Coverage
+      if: always()
+      shell: bash
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},helpers
+        REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-helpers
+        REPORT_PATH: artifacts/coverage-project.xml
+      run: |
+        if [ ! -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+          if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
+              break
+          fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+        if [ -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+            if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+                break
+            fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+
+    - name: Upload Helpers Namespace Tests Code Coverage
+      if: always()
+      shell: bash
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},helpers
+        REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-tests
+        REPORT_PATH: artifacts/coverage-tests.xml
+      run: |
+        if [ ! -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+          if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
+              break
+          fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+        if [ -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+            if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+                break
+            fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+
+    - name: Upload Logs
+      if: always()
+      uses: actions/upload-artifact@main
+      with:
+        name: runtests-${{ runner.os }}-py${{ matrix.python-version }}.log
+        path: artifacts/runtests-*.log
+
+  macOS:
+    runs-on: macOS-latest
+    needs: Pre-Commit
+
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        python-version:
+          - 3.5
+          - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Nox
+      run: |
+        python -m pip install --upgrade pip
+        pip install nox
+
+    - name: Install Test Requirements
+      run: |
+        nox --force-color -e tests-${{ matrix.python-version }} --install-only
+
+    - name: Test
+      id: run-tests
+      env:
+        SKIP_REQUIREMENTS_INSTALL: YES
+      run: |
+        nox --force-color -e tests-${{ matrix.python-version }} -- -vv tests/
+
+    - name: Create CodeCov Flags
+      if: always()
+      id: codecov-flags
+      run: |
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+
+    - name: Upload Helpers Namespace Code Coverage
+      if: always()
+      shell: bash
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},helpers
+        REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-helpers
+        REPORT_PATH: artifacts/coverage-project.xml
+      run: |
+        if [ ! -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+          if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
+              break
+          fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+        if [ -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+            if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+                break
+            fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+
+    - name: Upload Helpers Namespace Tests Code Coverage
+      if: always()
+      shell: bash
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},helpers
+        REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-tests
+        REPORT_PATH: artifacts/coverage-tests.xml
+      run: |
+        if [ ! -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+          if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
+              break
+          fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+        if [ -f codecov.sh ]; then
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+            if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+                break
+            fi
+            n=$((n+1))
+            sleep 15
+          done
+        fi
+
+    - name: Upload Logs
+      if: always()
+      uses: actions/upload-artifact@main
+      with:
+        name: runtests-${{ runner.os }}-py${{ matrix.python-version }}.log
+        path: artifacts/runtests-*.log

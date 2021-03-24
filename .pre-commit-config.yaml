@@ -1,0 +1,75 @@
+---
+minimum_pre_commit_version: 1.15.2
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.1.0
+    hooks:
+      - id: check-merge-conflict  # Check for files that contain merge conflict strings.
+      - id: trailing-whitespace   # Trims trailing whitespace.
+        args: [--markdown-linebreak-ext=md]
+      - id: mixed-line-ending     # Replaces or checks mixed line ending.
+        args: [--fix=lf]
+      - id: end-of-file-fixer     # Makes sure files end in a newline and only a newline.
+      - id: check-merge-conflict  # Check for files that contain merge conflict strings.
+      - id: check-ast             # Simply check whether files parse as valid python.
+
+  - repo: local
+    hooks:
+      - id: sort-pylint-spelling-words
+        name: Sort PyLint Spelling Words File
+        entry: python .pre-commit-hooks/sort-pylint-spelling-words.py
+        language: system
+        files: ^\.pylint-spelling-words$
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.10.0
+    hooks:
+      - id: pyupgrade
+        name: Rewrite Code to be Py3.5+
+        args: [--py3-plus]
+
+  - repo: https://github.com/hakancelik96/unimport
+    rev: "31cc123640880e385159c719d2f12b5cf8586495"
+    hooks:
+      - id: unimport
+        name: Remove unused imports
+        args: [--remove]
+        #exclude: ^(docs/.*\.py|src/pytest_helpers_namespace/factories/(cli|daemons)/__init__\.py)$
+        exclude: ^docs/.*\.py$
+
+
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v2.4.0
+    hooks:
+      - id: reorder-python-imports
+        args: [
+          --py3-plus,
+        ]
+        exclude: src/pytest_helpers_namespace/version.py
+
+  - repo: https://github.com/psf/black
+    rev: 20.8b1
+    hooks:
+      - id: black
+        args: [-l 100]
+        exclude: src/pytest_helpers_namespace/version.py
+
+  - repo: https://github.com/asottile/blacken-docs
+    rev: v1.7.0
+    hooks:
+      - id: blacken-docs
+        args: [--skip-errors]
+        files: ^docs/.*\.rst
+        additional_dependencies: [black==20.8b1]
+
+  - repo: https://github.com/pre-commit/mirrors-pylint
+    rev: v2.4.4
+    hooks:
+      - id: pylint
+        name: PyLint
+        args: [--output-format=parseable, --rcfile=.pylintrc]
+        exclude: src/pytest_helpers_namespace/version.py
+        additional_dependencies:
+          - saltpylint
+          - pyenchant
+          - salt>=3001

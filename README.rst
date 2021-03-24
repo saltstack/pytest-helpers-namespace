@@ -1,13 +1,6 @@
-Pytest Helpers Namespace
-========================
-
-.. image:: https://travis-ci.org/saltstack/pytest-helpers-namespace.svg?branch=master
-    :target: https://travis-ci.org/saltstack/pytest-helpers-namespace
-    :alt: See Build Status on Travis CI
-
-.. image:: https://ci.appveyor.com/api/projects/status/github/saltstack/pytest-helpers-namespace?branch=master&svg=true
-    :target: https://ci.appveyor.com/project/saltstack-public/pytest-helpers-namespace/branch/master
-    :alt: See Build Status on AppVeyor
+.. image:: https://github.com/saltstack/pytest-helpers-namespace/actions/workflows/testing.yml/badge.svg
+    :target: https://github.com/saltstack/pytest-helpers-namespace/actions/workflows/testing.yml
+    :alt: See Build Status
 
 .. image:: https://codecov.io/github/saltstack/pytest-helpers-namespace/coverage.svg?branch=master
     :target: https://codecov.io/github/saltstack/pytest-helpers-namespace?branch=master
@@ -33,6 +26,9 @@ Pytest Helpers Namespace
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
+
+Pytest Helpers Namespace
+========================
 
 This plugin does not provide any helpers to `pytest`_, it does, however,
 provide a helpers namespace in `pytest`_ which enables you to register helper
@@ -68,8 +64,6 @@ Usage
 Consider the following ``conftest.py`` file:
 
 .. code-block:: python
-
-   pytest_plugins = ['helpers_namespace']
 
    import pytest
 
@@ -140,6 +134,12 @@ description.
 Changelog
 ---------
 
+v2021.3.24
+~~~~~~~~~~
+
+* Switched project to a ``src`` layout.
+* Switched project to a declarative setuptools approach
+* Added support to check if a helper has been registered
 
 v2019.1.8
 ~~~~~~~~~

@@ -1,10 +1,12 @@
 [run]
 branch = True
 cover_pylib = False
-source = pytest_helpers_namespace
+parallel = True
+concurrency = multiprocessing
+relative_files = True
+
 omit =
-  pytest_helpers_namespace/version.py
-  tests/*.py
+  .nox/*
   setup.py
 
 [report]
@@ -22,13 +24,20 @@ exclude_lines =
 
     # Don't complain if non-runnable code isn't run:
     if 0:
+    if False:
     if __name__ == .__main__.:
+
+omit =
+  .nox/*
+  setup.py
+  src/pytest_helpers_namespace/version.py
+  tests/support/coverage/sitecustomize.py
 
 
 ignore_errors = True
 
 [paths]
 source =
-   pytest_helpers_namespace
-   .tox/*/lib/python*/site-packages/pytest_helpers_namespace
-   .tox/pypy*/site-packages/pytest_helpers_namespace
+  src/pytest_helpers_namespace
+testsuite =
+  tests/

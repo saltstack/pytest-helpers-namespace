@@ -67,4 +67,6 @@ target/
 
 # pyenv
 .python-version
+.lvimrc
 
+artifacts/

@@ -1,0 +1,6 @@
+-r base.txt
+-r tests.txt
+sphinx
+sphinx-material-saltstack
+sphinx-prompt
+sphinxcontrib-spelling

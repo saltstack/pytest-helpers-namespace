@@ -1,2 +1,2 @@
 # pragma: no cover
-pytest_plugins = 'pytester'
+pytest_plugins = "pytester"
