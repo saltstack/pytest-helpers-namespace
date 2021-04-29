@@ -87,6 +87,10 @@ jobs:
           - 3.7
           - 3.8
           - 3.9
+        pytest-version:
+          - "~=6.0.0"
+          - "~=6.1.0"
+          - ""
 
     steps:
     - uses: actions/checkout@v2
@@ -102,6 +106,8 @@ jobs:
         pip install nox
 
     - name: Install Test Requirements
+      env:
+        PYTEST_VERSION_REQUIREMENT: pytest${{ matrix.pytest-version }}
       run: |
         nox --force-color -e tests-${{ matrix.python-version }} --install-only
 
@@ -116,7 +122,7 @@ jobs:
       if: always()
       id: codecov-flags
       run: |
-        echo ::set-output name=flags::$(python -c "import sys; print('{},{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version || 'latest' }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
 
     - name: Upload Helpers Namespace Code Coverage
       if: always()
@@ -205,6 +211,10 @@ jobs:
           - 3.7
           - 3.8
           - 3.9
+        pytest-version:
+          - "~=6.0.0"
+          - "~=6.1.0"
+          - ""
 
     steps:
     - uses: actions/checkout@v2
@@ -220,6 +230,8 @@ jobs:
         pip install nox
 
     - name: Install Test Requirements
+      env:
+        PYTEST_VERSION_REQUIREMENT: pytest${{ matrix.pytest-version }}
       shell: bash
       run: |
         export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
@@ -238,7 +250,7 @@ jobs:
       if: always()
       id: codecov-flags
       run: |
-        echo ::set-output name=flags::$(python -c "import sys; print('{},{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version || 'latest' }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
 
     - name: Upload Helpers Namespace Code Coverage
       if: always()
@@ -327,6 +339,10 @@ jobs:
           - 3.7
           - 3.8
           - 3.9
+        pytest-version:
+          - "~=6.0.0"
+          - "~=6.1.0"
+          - ""
 
     steps:
     - uses: actions/checkout@v2
@@ -342,6 +358,8 @@ jobs:
         pip install nox
 
     - name: Install Test Requirements
+      env:
+        PYTEST_VERSION_REQUIREMENT: pytest${{ matrix.pytest-version }}
       run: |
         nox --force-color -e tests-${{ matrix.python-version }} --install-only
 
@@ -356,7 +374,7 @@ jobs:
       if: always()
       id: codecov-flags
       run: |
-        echo ::set-output name=flags::$(python -c "import sys; print('{},{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version || 'latest' }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
 
     - name: Upload Helpers Namespace Code Coverage
       if: always()

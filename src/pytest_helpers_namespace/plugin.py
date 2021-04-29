@@ -9,6 +9,20 @@ from functools import wraps
 
 import pytest
 
+try:  # pragma: no cover
+    import importlib.metadata
+
+    PYTEST_61 = importlib.metadata.version("pytest") >= "6.1.0"
+except ImportError:  # pragma: no cover
+    try:
+        import importlib_metadata
+
+        PYTEST_61 = importlib_metadata.version("pytest") >= "6.1.0"
+    except ImportError:  # pragma: no cover
+        import pkg_resources
+
+        PYTEST_61 = pkg_resources.get_distribution("pytest").version >= "6.1.0"
+
 
 class FuncWrapper:
     def __init__(self, func):
@@ -76,6 +90,12 @@ class HelpersRegistry:
 
     def __contains__(self, key):
         return key in self._registry
+
+    if PYTEST_61 is False:  # pragma: no cover
+
+        def __fspath__(self):
+            # Compatibility with PyTest 6.0.x
+            return __file__
 
 
 def pytest_load_initial_conftests(*_):

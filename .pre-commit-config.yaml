@@ -48,7 +48,7 @@ repos:
         exclude: src/pytest_helpers_namespace/version.py
 
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.4b2
     hooks:
       - id: black
         args: [-l 100]
@@ -60,7 +60,7 @@ repos:
       - id: blacken-docs
         args: [--skip-errors]
         files: ^docs/.*\.rst
-        additional_dependencies: [black==20.8b1]
+        additional_dependencies: [black==21.4b2]
 
   - repo: https://github.com/pre-commit/mirrors-pylint
     rev: v2.4.4

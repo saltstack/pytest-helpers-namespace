@@ -83,6 +83,11 @@ def tests(session):
         # Always have the wheel package installed
         session.install("wheel", silent=PIP_INSTALL_SILENT)
         session.install(COVERAGE_VERSION_REQUIREMENT, silent=PIP_INSTALL_SILENT)
+        pytest_version_requirement = os.environ.get("PYTEST_VERSION_REQUIREMENT") or None
+        if pytest_version_requirement:
+            if not pytest_version_requirement.startswith("pytest"):
+                pytest_version_requirement = "pytest{}".format(pytest_version_requirement)
+            session.install(pytest_version_requirement, silent=PIP_INSTALL_SILENT)
         session.install("-e", ".", silent=PIP_INSTALL_SILENT)
         session.install("-r", os.path.join("requirements", "tests.txt"), silent=PIP_INSTALL_SILENT)
 
