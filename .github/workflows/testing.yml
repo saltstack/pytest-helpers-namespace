@@ -122,7 +122,7 @@ jobs:
       if: always()
       id: codecov-flags
       run: |
-        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version || 'latest' }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
 
     - name: Upload Helpers Namespace Code Coverage
       if: always()
@@ -250,7 +250,7 @@ jobs:
       if: always()
       id: codecov-flags
       run: |
-        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version || 'latest' }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
 
     - name: Upload Helpers Namespace Code Coverage
       if: always()
@@ -374,7 +374,7 @@ jobs:
       if: always()
       id: codecov-flags
       run: |
-        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version || 'latest' }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
+        echo ::set-output name=flags::$(python -c "import sys; print('{},{},pytest${{ matrix.pytest-version }}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info)))")
 
     - name: Upload Helpers Namespace Code Coverage
       if: always()
