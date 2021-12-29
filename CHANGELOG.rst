@@ -12,6 +12,15 @@ Versions follow `Calendar Versioning <https://calver.org/>`_
 .. towncrier release notes start
 
 
+2021.12.29
+==========
+
+Improvements
+------------
+
+- `#11 <https://github.com/saltstack/pytest-helpers-namespace/issues/11>`_: Plugin is now fully typed.
+
+
 v2021.3.24
 ==========
 
