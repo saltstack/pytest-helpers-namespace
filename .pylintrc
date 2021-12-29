@@ -19,10 +19,7 @@ persistent=yes
 
 # List of plugins (as comma separated values of python modules names) to load,
 # usually to register additional checkers.
-load-plugins=saltpylint.pep8,
-  saltpylint.strings,
-  saltpylint.fileperms,
-  saltpylint.smartup,
+load-plugins=
 
 # Use multiple processes to speed up Pylint.
 jobs=1
@@ -116,7 +113,8 @@ disable=R,
   import-outside-toplevel,
   wrong-import-position,
   wrong-import-order,
-  missing-whitespace-after-comma
+  missing-whitespace-after-comma,
+  consider-using-f-string
 
 # Disabled:
 # R* [refactoring suggestions & reports]

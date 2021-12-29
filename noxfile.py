@@ -1,3 +1,7 @@
+# Copyright 2021 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+#
+# pylint: disable=import-error,protected-access,line-too-long
 import datetime
 import json
 import os
@@ -11,23 +15,19 @@ from nox.command import CommandFailed
 
 
 COVERAGE_VERSION_REQUIREMENT = "coverage==5.5"
+PYTEST_VERSION_REQUIREMENT = os.environ.get("PYTEST_VERSION_REQUIREMENT") or None
 IS_WINDOWS = sys.platform.lower().startswith("win")
 IS_DARWIN = sys.platform.lower().startswith("darwin")
 
 if IS_WINDOWS:
-    COVERAGE_FAIL_UNDER_PERCENT = 70
+    COVERAGE_FAIL_UNDER_PERCENT = 96
 elif IS_DARWIN:
-    COVERAGE_FAIL_UNDER_PERCENT = 75
+    COVERAGE_FAIL_UNDER_PERCENT = 96
 else:
-    COVERAGE_FAIL_UNDER_PERCENT = 80
+    COVERAGE_FAIL_UNDER_PERCENT = 96
 
 # Be verbose when running under a CI context
-PIP_INSTALL_SILENT = (
-    os.environ.get("JENKINS_URL")
-    or os.environ.get("CI")
-    or os.environ.get("DRONE")
-    or os.environ.get("GITHUB_ACTIONS")
-) is None
+PIP_INSTALL_SILENT = (os.environ.get("CI") or os.environ.get("GITHUB_ACTIONS")) is None
 CI_RUN = PIP_INSTALL_SILENT is False
 SKIP_REQUIREMENTS_INSTALL = "SKIP_REQUIREMENTS_INSTALL" in os.environ
 EXTRA_REQUIREMENTS_INSTALL = os.environ.get("EXTRA_REQUIREMENTS_INSTALL")
@@ -37,7 +37,6 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parent
 # Change current directory to REPO_ROOT
 os.chdir(str(REPO_ROOT))
 
-SITECUSTOMIZE_DIR = str(REPO_ROOT / "tests" / "support" / "coverage")
 ARTIFACTS_DIR = REPO_ROOT / "artifacts"
 # Make sure the artifacts directory exists
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -54,6 +53,24 @@ JUNIT_REPORT = ARTIFACTS_DIR.relative_to(REPO_ROOT) / "junit-report.xml"
 nox.options.reuse_existing_virtualenvs = True
 #  Don't fail on missing interpreters
 nox.options.error_on_missing_interpreters = False
+
+
+def pytest_version(session):
+    try:
+        return session._runner._pytest_version_info
+    except AttributeError:
+        session_pytest_version = session_run_always(
+            session,
+            "python",
+            "-c",
+            'import sys, pkg_resources; sys.stdout.write("{}".format(pkg_resources.get_distribution("pytest").version))',
+            silent=True,
+            log=False,
+        )
+        session._runner._pytest_version_info = tuple(
+            int(part) for part in session_pytest_version.split(".") if part.isdigit()
+        )
+    return session._runner._pytest_version_info
 
 
 def session_run_always(session, *command, **kwargs):
@@ -73,23 +90,26 @@ def session_run_always(session, *command, **kwargs):
             session._runner.global_config.install_only = old_install_only_value
 
 
-@nox.session(python=("3", "3.5", "3.6", "3.7", "3.8", "3.9"))
+@nox.session(python=("3", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10"))
 def tests(session):
     """
-    Run tests
+    Run tests.
     """
     env = {}
     if SKIP_REQUIREMENTS_INSTALL is False:
         # Always have the wheel package installed
-        session.install("wheel", silent=PIP_INSTALL_SILENT)
-        session.install(COVERAGE_VERSION_REQUIREMENT, silent=PIP_INSTALL_SILENT)
-        pytest_version_requirement = os.environ.get("PYTEST_VERSION_REQUIREMENT") or None
+        session.install("--progress-bar=off", "wheel", silent=PIP_INSTALL_SILENT)
+        session.install(
+            "--progress-bar=off", COVERAGE_VERSION_REQUIREMENT, silent=PIP_INSTALL_SILENT
+        )
+        pytest_version_requirement = PYTEST_VERSION_REQUIREMENT
         if pytest_version_requirement:
             if not pytest_version_requirement.startswith("pytest"):
                 pytest_version_requirement = "pytest{}".format(pytest_version_requirement)
-            session.install(pytest_version_requirement, silent=PIP_INSTALL_SILENT)
-        session.install("-e", ".", silent=PIP_INSTALL_SILENT)
-        session.install("-r", os.path.join("requirements", "tests.txt"), silent=PIP_INSTALL_SILENT)
+            session.install(
+                "--progress-bar=off", pytest_version_requirement, silent=PIP_INSTALL_SILENT
+            )
+        session.install("--progress-bar=off", "-e", ".[tests]", silent=PIP_INSTALL_SILENT)
 
         if EXTRA_REQUIREMENTS_INSTALL:
             session.log(
@@ -103,25 +123,15 @@ def tests(session):
 
     session.run("coverage", "erase")
 
-    python_path_env_var = os.environ.get("PYTHONPATH") or None
-    if python_path_env_var is None:
-        python_path_env_var = SITECUSTOMIZE_DIR
-    else:
-        python_path_entries = python_path_env_var.split(os.pathsep)
-        if SITECUSTOMIZE_DIR in python_path_entries:
-            python_path_entries.remove(SITECUSTOMIZE_DIR)
-        python_path_entries.insert(0, SITECUSTOMIZE_DIR)
-        python_path_env_var = os.pathsep.join(python_path_entries)
-
-    env = {
-        # The updated python path so that sitecustomize is importable
-        "PYTHONPATH": python_path_env_var,
-        # The full path to the .coverage data file. Makes sure we always write
-        # them to the same directory
-        "COVERAGE_FILE": str(COVERAGE_REPORT_DB),
-        # Instruct sub processes to also run under coverage
-        "COVERAGE_PROCESS_START": str(REPO_ROOT / ".coveragerc"),
-    }
+    env.update(
+        {
+            # The full path to the .coverage data file. Makes sure we always write
+            # them to the same directory
+            "COVERAGE_FILE": str(COVERAGE_REPORT_DB),
+            # Instruct sub processes to also run under coverage
+            "COVERAGE_PROCESS_START": str(REPO_ROOT / ".coveragerc"),
+        }
+    )
 
     args = [
         "--rootdir",
@@ -131,9 +141,12 @@ def tests(session):
         "--show-capture=no",
         "--junitxml={}".format(JUNIT_REPORT),
         "--showlocals",
+        "--strict-markers",
         "-ra",
         "-s",
     ]
+    if pytest_version(session) > (6, 2):
+        args.append("--lsof")
     if session._runner.global_config.forcecolor:
         args.append("--color=yes")
     if not session.posargs:
@@ -144,54 +157,51 @@ def tests(session):
                 args.remove("--color=yes")
             args.append(arg)
 
-    session.run("coverage", "run", "-m", "pytest", *args, env=env)
-
-    # Always combine and generate the XML coverage report
     try:
-        session.run("coverage", "combine")
-    except CommandFailed:
-        # Sometimes some of the coverage files are corrupt which would
-        # trigger a CommandFailed exception
-        pass
-    # Generate report for project code coverage
-    session.run(
-        "coverage",
-        "xml",
-        "-o",
-        str(COVERAGE_REPORT_PROJECT),
-        "--omit=tests/*",
-        "--include=src/pytest_helpers_namespace/*",
-    )
-    # Generate report for tests code coverage
-    session.run(
-        "coverage",
-        "xml",
-        "-o",
-        str(COVERAGE_REPORT_TESTS),
-        "--omit=src/pytest_helpers_namespace/*",
-        "--include=tests/*",
-    )
-    try:
-        cmdline = [
-            "coverage",
-            "report",
-            "--show-missing",
-            "--include=src/pytest_helpers_namespace/*,tests/*",
-            "--fail-under={}".format(COVERAGE_FAIL_UNDER_PERCENT),
-        ]
-        session.run(*cmdline)
+        session.run("coverage", "run", "-m", "pytest", *args, env=env)
     finally:
-        if COVERAGE_REPORT_DB.exists():
-            shutil.copyfile(str(COVERAGE_REPORT_DB), str(ARTIFACTS_DIR / ".coverage"))
+        # Always combine and generate the XML coverage report
+        try:
+            session.run("coverage", "combine")
+        except CommandFailed:
+            # Sometimes some of the coverage files are corrupt which would
+            # trigger a CommandFailed exception
+            pass
+        # Generate report for project code coverage
+        session.run(
+            "coverage",
+            "xml",
+            "-o",
+            str(COVERAGE_REPORT_PROJECT),
+            "--omit=tests/*",
+            "--include=src/pytest_helpers_namespace/*",
+        )
+        # Generate report for tests code coverage
+        session.run(
+            "coverage",
+            "xml",
+            "-o",
+            str(COVERAGE_REPORT_TESTS),
+            "--omit=src/pytest_helpers_namespace/*",
+            "--include=tests/*",
+        )
+        try:
+            cmdline = [
+                "coverage",
+                "report",
+                "--show-missing",
+                "--include=src/pytest_helpers_namespace/*,tests/*",
+            ]
+            session.run(*cmdline)
+            if pytest_version(session) >= (6, 2):
+                cmdline.append("--fail-under={}".format(COVERAGE_FAIL_UNDER_PERCENT))
+        finally:
+            if COVERAGE_REPORT_DB.exists():
+                shutil.copyfile(str(COVERAGE_REPORT_DB), str(ARTIFACTS_DIR / ".coverage"))
 
 
 def _lint(session, rcfile, flags, paths):
-    session.install(
-        "--progress-bar=off",
-        "-r",
-        os.path.join("requirements", "lint.txt"),
-        silent=PIP_INSTALL_SILENT,
-    )
+    session.install("--progress-bar=off", "-e", ".[lint]", silent=PIP_INSTALL_SILENT)
     session.run("pylint", "--version")
     pylint_report_path = os.environ.get("PYLINT_REPORT")
 
@@ -209,7 +219,7 @@ def _lint(session, rcfile, flags, paths):
             sys.stdout.flush()
             if pylint_report_path:
                 # Write report
-                with open(pylint_report_path, "w") as wfh:
+                with open(pylint_report_path, "w", encoding="utf-8") as wfh:
                     wfh.write(contents)
                 session.log("Report file written to %r", pylint_report_path)
         stdout.close()
@@ -253,21 +263,16 @@ def lint_tests(session):
 @nox.session(python="3")
 def docs(session):
     """
-    Build Docs
+    Build Docs.
     """
-    session.install(
-        "--progress-bar=off",
-        "-r",
-        os.path.join("requirements", "docs.txt"),
-        silent=PIP_INSTALL_SILENT,
-    )
+    session.install("--progress-bar=off", "-e", ".[docs]", silent=PIP_INSTALL_SILENT)
     os.chdir("docs/")
     session.run("make", "clean", external=True)
-    session.run("make", "linkcheck", "SPHINXOPTS=-W", external=True)
+    # session.run("make", "linkcheck", "SPHINXOPTS=-W", external=True)
     session.run("make", "coverage", "SPHINXOPTS=-W", external=True)
     docs_coverage_file = os.path.join("_build", "html", "python.txt")
     if os.path.exists(docs_coverage_file):
-        with open(docs_coverage_file) as rfh:
+        with open(docs_coverage_file, encoding="utf-8") as rfh:
             contents = rfh.readlines()[2:]
             if contents:
                 session.error("\n" + "".join(contents))
@@ -275,17 +280,23 @@ def docs(session):
     os.chdir("..")
 
 
+@nox.session(name="docs-dev", python="3")
+def docs_dev(session):
+    """
+    Build Docs.
+    """
+    session.install("--progress-bar=off", "-e", ".[docs]", silent=PIP_INSTALL_SILENT)
+    os.chdir("docs/")
+    session.run("make", "html", "SPHINXOPTS=-W", external=True, env={"LOCAL_DEV_BUILD": "1"})
+    os.chdir("..")
+
+
 @nox.session(name="docs-crosslink-info", python="3")
 def docs_crosslink_info(session):
     """
-    Report intersphinx cross links information
+    Report intersphinx cross links information.
     """
-    session.install(
-        "--progress-bar=off",
-        "-r",
-        os.path.join("requirements", "docs.txt"),
-        silent=PIP_INSTALL_SILENT,
-    )
+    session.install("--progress-bar=off", "-e", ".[docs]", silent=PIP_INSTALL_SILENT)
     os.chdir("docs/")
     intersphinx_mapping = json.loads(
         session.run(
@@ -319,15 +330,91 @@ def docs_crosslink_info(session):
 @nox.session(name="gen-api-docs", python="3")
 def gen_api_docs(session):
     """
-    Generate API Docs
+    Generate API Docs.
     """
-    session.install(
-        "--progress-bar=off",
-        "-r",
-        os.path.join("requirements", "docs.txt"),
-        silent=PIP_INSTALL_SILENT,
-    )
-    shutil.rmtree("docs/ref")
+    session.install("--progress-bar=off", "-e", ".[docs]", silent=PIP_INSTALL_SILENT)
+    shutil.rmtree("docs/ref", ignore_errors=True)
     session.run(
         "sphinx-apidoc", "--module-first", "-o", "docs/ref/", "src/pytest_helpers_namespace/"
     )
+
+
+@nox.session(name="twine-check", python="3")
+def twine_check(session):
+    """
+    Run ``twine-check`` against the source distribution package.
+    """
+    session.install("--progress-bar=off", "twine", silent=PIP_INSTALL_SILENT)
+    session.run(
+        "python",
+        "setup.py",
+        "sdist",
+        silent=True,
+        log=False,
+    )
+    session.run("twine", "check", "dist/*")
+
+
+@nox.session(name="changelog", python="3")
+@nox.parametrize("draft", [False, True])
+def changelog(session, draft):
+    """
+    Generate changelog.
+    """
+    session.install("--progress-bar=off", "-e", ".[changelog]", silent=PIP_INSTALL_SILENT)
+    version = session.run(
+        "python",
+        "setup.py",
+        "--version",
+        silent=True,
+        log=False,
+    )
+
+    town_cmd = ["towncrier", "--version={}".format(version)]
+    if draft:
+        town_cmd.append("--draft")
+    session.run(*town_cmd)
+
+
+@nox.session(name="release")
+def release(session):
+    """
+    Create a release tag.
+    """
+    if not session.posargs:
+        session.error(
+            "Forgot to pass the version to release? For example `nox -e release -- 1.1.0`"
+        )
+    if len(session.posargs) > 1:
+        session.error(
+            "Only one argument is supported by the `release` nox session. "
+            "For example `nox -e release -- 1.1.0`"
+        )
+    version = session.posargs[0]
+    try:
+        session.log("Generating temporary %s tag", version)
+        session.run("git", "tag", "-as", version, "-m", "Release {}".format(version), external=True)
+        changelog(session, draft=False)
+    except CommandFailed:
+        session.error("Failed to generate the temporary tag")
+    # session.notify("changelog(draft=False)")
+    try:
+        session.log("Generating the release changelog")
+        session.run(
+            "git",
+            "commit",
+            "-a",
+            "-m",
+            "Generate Changelog for version {}".format(version),
+            external=True,
+        )
+    except CommandFailed:
+        session.error("Failed to generate the release changelog")
+    try:
+        session.log("Overwriting temporary %s tag", version)
+        session.run(
+            "git", "tag", "-fas", version, "-m", "Release {}".format(version), external=True
+        )
+    except CommandFailed:
+        session.error("Failed to overwrite the temporary tag")
+    session.warn("Don't forget to push the newly created tag")

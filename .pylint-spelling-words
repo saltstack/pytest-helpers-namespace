@@ -1,13 +1,16 @@
 abspath
 autodoc
+changelog
 config
 confvals
 css
 favicon
 favicons
+funcwrapper
 ico
 intersphinx
 intl
+linkcheck
 minify
 namespace
 namespaces
@@ -21,6 +24,8 @@ repo
 rst
 sitecustomize
 sitevars
+str
 sys
 toc
 virtualenvs
+vmware

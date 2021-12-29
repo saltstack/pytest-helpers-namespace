@@ -26,6 +26,9 @@
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/pytest-helpers-namespace
 
+..
+   include-starts-here
+
 
 Pytest Helpers Namespace
 ========================
@@ -67,11 +70,12 @@ Consider the following ``conftest.py`` file:
 
    import pytest
 
+
    @pytest.helpers.register
    def foo(bar):
-       '''
+       """
        this dumb helper function will just return what you pass to it
-       '''
+       """
        return bar
 
 
@@ -90,15 +94,16 @@ You can even nest namespaces. Consider the following ``conftest.py`` file:
 
 .. code-block:: python
 
-   pytest_plugins = ['helpers_namespace']
+   pytest_plugins = ["helpers_namespace"]
 
    import pytest
 
+
    @pytest.helpers.can.haz.register
    def foo(bar):
-       '''
+       """
        this dumb helper function will just return what you pass to it
-       '''
+       """
        return bar
 
 
@@ -113,86 +118,6 @@ And now consider the following test case:
 You can even pass a name to the register function and that will be the helper function name.
 
 
-Contributing
-------------
-Contributions are very welcome. Tests can be run with `nox`_, please ensure
-the coverage at least stays the same before you submit a pull request.
-
-License
--------
-
-Distributed under the terms of the `Apache Software License 2.0`_ license,
-"pytest-helpers-namespace" is free and open source software.
-
-
-Issues
-------
-
-If you encounter any problems, please `file an issue`_ along with a detailed
-description.
-
-Changelog
----------
-
-v2021.3.24
-~~~~~~~~~~
-
-* Switched project to a ``src`` layout.
-* Switched project to a declarative setuptools approach
-* Added support to check if a helper has been registered
-* Pytest >= 6.1.1 is now required
-
-v2019.1.8
-~~~~~~~~~
-
-* Patch PyTest before any ``conftest.py`` file is processed.
-
-v2019.1.7
-~~~~~~~~~
-
-* Support PyTest >= 4.1
-
-v2019.1.6.post1
-~~~~~~~~~~~~~~~
-
-* No changes were made besides locking to PyTest < 4.0
-
-v2019.1.6
-~~~~~~~~~
-
-* No changes were made besides locking to PyTest < 4.1
-
-v2017.11.11
-~~~~~~~~~~~
-
-* Allow passing a string to the register function which will be the helper name
-
-v2016.7.10
-~~~~~~~~~~
-
-* Allow a registered function to contibue to behave as a regular function. `#4`_.
-
-v2016.4.15
-~~~~~~~~~~
-
-* Hide the ``FuncWrapper`` traceback in pytest failures. `#3`_. Thanks Logan Glickfield(`@lsglick`_)
-
-v2016.4.5
-~~~~~~~~~
-
-* Use a wrapper class instead of adding an attribute to a function.
-
-v2016.4.3
-~~~~~~~~~
-
-* Provide proper errors when helper functions or namespaces are being
-  overridden. `#1`_
-
-v2016.3.2
-~~~~~~~~~~
-
-* First working release
-
 ----
 
 This `Pytest`_ plugin was generated with `Cookiecutter`_ along with
@@ -200,16 +125,15 @@ This `Pytest`_ plugin was generated with `Cookiecutter`_ along with
 
 .. _`Cookiecutter`: https://github.com/audreyr/cookiecutter
 .. _`@hackebrot`: https://github.com/hackebrot
-.. _`Apache Software License 2.0`: http://www.apache.org/licenses/LICENSE-2.0
 .. _`cookiecutter-pytest-plugin`: https://github.com/pytest-dev/cookiecutter-pytest-plugin
-.. _`file an issue`: https://github.com/saltstack/pytest-helpers-namespace/issues
 .. _`pytest`: https://github.com/pytest-dev/pytest
-.. _`nox`: https://nox.thea.codes/en/stable/
 .. _`pip`: https://pypi.python.org/pypi/pip/
 .. _`PyPI`: https://pypi.python.org/pypi
 
-.. _`#1`: https://github.com/saltstack/pytest-helpers-namespace/issues/1
-.. _`#3`: https://github.com/saltstack/pytest-helpers-namespace/pull/3
-.. _`#4`: https://github.com/saltstack/pytest-helpers-namespace/issues/4
+..
+   include-ends-here
 
-.. _`@lsglick`: https://github.com/lsglick
+Documentation
+=============
+
+The full documentation can be seen `here <https://pytest-helpers-namespace.readthedocs.io>`_.

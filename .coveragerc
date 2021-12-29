@@ -8,6 +8,7 @@ relative_files = True
 omit =
   .nox/*
   setup.py
+  noxfile.py
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -20,24 +21,26 @@ exclude_lines =
 
     # Don't complain if tests don't hit defensive assertion code:
     raise AssertionError
+    raise NotImplemented
     raise NotImplementedError
 
     # Don't complain if non-runnable code isn't run:
     if 0:
     if False:
     if __name__ == .__main__.:
+    if TYPE_CHECKING:
 
 omit =
   .nox/*
   setup.py
-  src/pytest_helpers_namespace/version.py
-  tests/support/coverage/sitecustomize.py
+  noxfile.py
 
 
 ignore_errors = True
 
 [paths]
 source =
-  src/pytest_helpers_namespace
+  src/pytest_helpers_namespace/
+  **/site-packages/pytest_helpers_namespace/
 testsuite =
   tests/
