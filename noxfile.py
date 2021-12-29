@@ -371,7 +371,7 @@ def changelog(session, draft):
         stderr=None,
     )
 
-    town_cmd = ["towncrier", "--version={}".format(version)]
+    town_cmd = ["towncrier", "build", "--version={}".format(version.strip())]
     if draft:
         town_cmd.append("--draft")
     session.run(*town_cmd)

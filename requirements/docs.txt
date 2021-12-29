@@ -1,9 +1,9 @@
 -r base.txt
 -r tests.txt
--r changelog.txt
 furo
 sphinx
 sphinx-copybutton
 sphinx-prompt
 sphinxcontrib-spelling
+towncrier==21.3.0
 sphinxcontrib-towncrier >= 0.2.0a0
