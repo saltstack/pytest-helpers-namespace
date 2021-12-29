@@ -368,6 +368,7 @@ def changelog(session, draft):
         "--version",
         silent=True,
         log=False,
+        stderr=None,
     )
 
     town_cmd = ["towncrier", "--version={}".format(version)]
