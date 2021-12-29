@@ -1,0 +1,1 @@
+Plugin is now fully typed.

@@ -1,0 +1,15 @@
+.literal-block-wrapper, article div[class^="highlight-default"] {
+  margin-top: 0.4em;
+}
+
+.literal-block-wrapper .code-block-caption {
+  text-align: left;
+}
+
+.literal-block-wrapper .code-block-caption .caption-text {
+  padding: 0.5em 0.7em;
+  border: .1em solid var(--color-code-background);
+  border-radius: 0.6rem 0.6rem 0 0;
+  background-color: var(--color-code-background);
+  font-family: var(--font-stack--monospace);
+}

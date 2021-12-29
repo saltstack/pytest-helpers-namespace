@@ -1,7 +1,10 @@
+# Copyright 2021 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+#
 import pytest
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def reset_helpers_namespace(request):
     try:
         yield
@@ -10,8 +13,8 @@ def reset_helpers_namespace(request):
         plugin._registry.clear()
 
 
-def test_namespace(testdir):
-    testdir.makeconftest(
+def test_namespace(pytester):
+    pytester.makeconftest(
         """
         import pytest
 
@@ -21,7 +24,7 @@ def test_namespace(testdir):
         """
     )
 
-    testdir.makepyfile(
+    pytester.makepyfile(
         """
         import pytest
 
@@ -31,7 +34,7 @@ def test_namespace(testdir):
     """
     )
 
-    result = testdir.runpytest_subprocess("-s")
+    result = pytester.runpytest("-s")
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines(
@@ -44,8 +47,8 @@ def test_namespace(testdir):
     assert result.ret == 0
 
 
-def test_nested_namespace(testdir):
-    testdir.makeconftest(
+def test_nested_namespace(pytester):
+    pytester.makeconftest(
         """
         import pytest
 
@@ -55,7 +58,7 @@ def test_nested_namespace(testdir):
         """
     )
 
-    testdir.makepyfile(
+    pytester.makepyfile(
         """
         import pytest
 
@@ -65,7 +68,7 @@ def test_nested_namespace(testdir):
     """
     )
 
-    result = testdir.runpytest_subprocess("-s")
+    result = pytester.runpytest("-s")
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines(
@@ -78,20 +81,21 @@ def test_nested_namespace(testdir):
     assert result.ret == 0
 
 
-def test_unregistered_namespace(testdir):
-    testdir.makepyfile(
+def test_unregistered_namespace(pytester):
+    pytester.makepyfile(
         """
         import pytest
 
         def test_helpers():
             with pytest.raises(RuntimeError) as exc:
                 assert pytest.helpers.foo(True) is True
-            assert 'The helper being called was not registred' in str(exc)
+            strexc = str(exc)
+            assert 'The helper being called was not registered' in strexc
             print('PASSED')
     """
     )
 
-    result = testdir.runpytest_subprocess("-s")
+    result = pytester.runpytest("-s")
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines(
@@ -104,8 +108,8 @@ def test_unregistered_namespace(testdir):
     assert result.ret == 0
 
 
-def test_namespace_override(testdir):
-    testdir.makeconftest(
+def test_namespace_override(pytester):
+    pytester.makeconftest(
         """
         import pytest
 
@@ -118,19 +122,19 @@ def test_namespace_override(testdir):
             return bar
         """
     )
-    testdir.makepyfile(
+    pytester.makepyfile(
         """
         import pytest
 
         def test_helpers():
             with pytest.raises(RuntimeError) as exc:
                 assert pytest.helpers.foo(True) is True
-            assert 'The helper being called was not registred' in str(exc)
+            assert 'The helper being called was not registered' in str(exc)
             print('PASSED')
     """
     )
 
-    result = testdir.runpytest_subprocess("-s")
+    result = pytester.runpytest("-s")
 
     # fnmatch_lines does an assertion internally
     result.stderr.fnmatch_lines(
@@ -141,8 +145,8 @@ def test_namespace_override(testdir):
     assert result.ret != 0
 
 
-def test_namespace_override_2(testdir):
-    testdir.makeconftest(
+def test_helper_override(pytester):
+    pytester.makeconftest(
         """
         import pytest
 
@@ -150,61 +154,24 @@ def test_namespace_override_2(testdir):
         def foo(bar):
             return bar
 
-        @pytest.helpers.foo.register
-        def bar(bar):
+        @pytest.helpers.register
+        def foo(bar):
             return bar
         """
     )
-    testdir.makepyfile(
+    pytester.makepyfile(
         """
         import pytest
 
         def test_helpers():
             with pytest.raises(RuntimeError) as exc:
                 assert pytest.helpers.foo(True) is True
-            assert 'The helper being called was not registred' in str(exc)
+            assert 'The helper being called was not registered' in str(exc)
             print('PASSED')
     """
     )
 
-    result = testdir.runpytest_subprocess("-s")
-
-    # fnmatch_lines does an assertion internally
-    result.stderr.fnmatch_lines(
-        ["*RuntimeError: A namespace is already registered under the name: bar"]
-    )
-
-    # make sure that that we get a '0' exit code for the test suite
-    assert result.ret != 0
-
-
-def test_helper_override(testdir):
-    testdir.makeconftest(
-        """
-        import pytest
-
-        @pytest.helpers.register
-        def foo(bar):
-            return bar
-
-        @pytest.helpers.register
-        def foo(bar):
-            return bar
-        """
-    )
-    testdir.makepyfile(
-        """
-        import pytest
-
-        def test_helpers():
-            with pytest.raises(RuntimeError) as exc:
-                assert pytest.helpers.foo(True) is True
-            assert 'The helper being called was not registred' in str(exc)
-            print('PASSED')
-    """
-    )
-
-    result = testdir.runpytest_subprocess("-s")
+    result = pytester.runpytest("-s")
 
     # fnmatch_lines does an assertion internally
     result.stderr.fnmatch_lines(
@@ -215,37 +182,32 @@ def test_helper_override(testdir):
     assert result.ret != 0
 
 
-def test_helper_as_regular_function(testdir):
-    testdir.makepyfile(
+def test_helper_as_regular_function(pytester):
+    pytester.makepyfile(
         """
         import pytest
 
         @pytest.helpers.register
-        def foo():
+        def foo2():
             return 'bar'
 
         def test_helpers():
-            assert pytest.helpers.foo() == 'bar'
-            assert foo() == 'bar'
-            print('PASSED')
-    """
+            assert pytest.helpers.foo2() == 'bar'
+            assert foo2() == 'bar'
+        """
     )
 
-    result = testdir.runpytest_subprocess("-s")
+    result = pytester.runpytest("-svv", "--log-cli-level=debug")
 
     # fnmatch_lines does an assertion internally
-    result.stdout.fnmatch_lines(
-        [
-            "test_helper_as_regular_function.py PASSED",
-        ]
-    )
+    result.stdout.fnmatch_lines(["test_helper_as_regular_function.py::test_helpers PASSED"])
 
     # make sure that that we get a '0' exit code for the test suite
     assert result.ret == 0
 
 
-def test_helper_with_custom_name(testdir):
-    testdir.makepyfile(
+def test_helper_with_custom_name(pytester):
+    pytester.makepyfile(
         """
         import pytest
 
@@ -260,7 +222,7 @@ def test_helper_with_custom_name(testdir):
     """
     )
 
-    result = testdir.runpytest_subprocess("-s")
+    result = pytester.runpytest("-s")
 
     # fnmatch_lines does an assertion internally
     result.stdout.fnmatch_lines(
@@ -273,13 +235,64 @@ def test_helper_with_custom_name(testdir):
     assert result.ret == 0
 
 
-@pytest.mark.usefixtures("reset_helpers_namespace")
-def test_helper_contains_method():
-    assert "bar" not in pytest.helpers
+def test_helper_contains_method(pytester):
+    pytester.makeconftest(
+        """
+        import pytest
 
-    @pytest.helpers.register
-    def bar():
-        return True
+        assert "bar" not in pytest.helpers
 
-    assert "bar" in pytest.helpers
-    assert pytest.helpers.bar() is True
+        @pytest.helpers.register
+        def bar():
+            return True
+        """
+    )
+    pytester.makepyfile(
+        """
+        import pytest
+
+        def test_it():
+            assert "bar" in pytest.helpers
+            assert pytest.helpers.bar() is True
+        """
+    )
+
+    result = pytester.runpytest("-vv")
+    result.assert_outcomes(passed=1)
+
+
+def test_call_register_on_helper_function(pytester):
+    pytester.makeconftest(
+        """
+        import pytest
+
+        @pytest.helpers.register
+        def foo(bar):
+            return bar
+
+        @pytest.helpers.foo.register
+        def blah(blah):
+            return bar
+        """
+    )
+    pytester.makepyfile(
+        """
+        import pytest
+
+        def test_helpers():
+            with pytest.raises(RuntimeError) as exc:
+                assert pytest.helpers.foo(True) is True
+    """
+    )
+
+    result = pytester.runpytest("-s")
+
+    # fnmatch_lines does an assertion internally
+    result.stderr.fnmatch_lines(
+        [
+            "*RuntimeError: Helper functions cannot be used to register new helper functions. "
+            "Register and use a namespace for that.*",
+        ]
+    )
+    # make sure that that we get a '0' exit code for the test suite
+    assert result.ret != 0

@@ -70,3 +70,7 @@ target/
 .lvimrc
 
 artifacts/
+
+.vim/
+
+src/pytest_helpers_namespace/version.py
