@@ -27,7 +27,6 @@
 {% for text, values in sections[section][category].items() %}
 {% set issue_joiner = joiner(', ') -%}
 - {% for value in values|sort %}{{ issue_joiner() }}{{ issue_link(value) }}{% endfor %}: {{ text }}
-
 {% endfor %}
 
 {% else %}
