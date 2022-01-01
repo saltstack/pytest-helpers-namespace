@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2021 VMware, Inc.
+# Copyright 2021-2022 VMware, Inc.
 # SPDX-License-Identifier: Apache-2.0
 #
 # pylint: disable=invalid-name,missing-module-docstring,missing-function-docstring
@@ -39,6 +39,8 @@ def check_copyright(files):
                 if contents != original_contents:
                     print(f"Added the SPDX header to {file}")
         finally:
+            if not contents.endswith("\n"):
+                contents += "\n"
             if original_contents != contents:
                 file.write_text(contents)
 
@@ -65,6 +67,9 @@ def update_copyright_header(contents):
         match = COPYRIGHT_REGEX.match(line)
         if match:
             this_year = str(datetime.today().year)
+            cur_year = match.group("cur_year")
+            if cur_year and cur_year.strip() == this_year:
+                return contents
             initial_year = match.group("start_year").strip()
             if initial_year == this_year:
                 return contents
